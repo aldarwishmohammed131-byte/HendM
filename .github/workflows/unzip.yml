@@ -1,0 +1,17 @@
+name: Unzip HendM in repo
+on: { workflow_dispatch: {} }
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update -y && sudo apt-get install -y unzip rsync
+      - run: |
+          test -f HendM_starter.zip || (echo "Archive not found" && exit 1)
+          rm -rf extracted_zip
+          unzip -o HendM_starter.zip -d extracted_zip
+      - run: |
+          rsync -a extracted_zip/ ./
+          rm -rf extracted_zip HendM_starter.zip
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with: { commit_message: "Unzip HendM starter and arrange folders" }
