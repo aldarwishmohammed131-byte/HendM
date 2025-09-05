@@ -1,24 +1,43 @@
-generator client { provider = "prisma-client-js" }
-datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // ضع متغير الاتصال من Vercel Postgres
+}
+
+/** المنتجات */
 model Product {
-  id            Int      @id @default(autoincrement())
-  slug          String   @unique
+  id            Int            @id @default(autoincrement())
+  slug          String         @unique              // معرّف نصي URL-friendly
   title         String
   titleAr       String
   description   String
   descriptionAr String
   price         Int
-  currency      String   @default("USD")
+  currency      String         @default("USD")
   category      String
-  sizes         String[]
-  colors        String[]
-  images        ProductImage[]
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  sizes         String[]                               // مثل ["S","M","L"]
+  colors        String[]                               // مثل ["black","white"]
+  images        ProductImage[]                         // علاقة إلى صور المنتج
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([slug])
 }
+
+/** صور المنتجات */
 model ProductImage {
-  id        Int     @id @default(autoincrement())
-  url       String
-  product   Product @relation(fields: [productId], references: [id])
+  id        Int      @id @default(autoincrement())
+  url       String                                   // رابط الصورة
+  alt       String?                                  // نص بديل (اختياري)
   productId Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
 }
