@@ -1,17 +1,30 @@
-name: Unzip HendM in repo
-on: { workflow_dispatch: {} }
+name: Unzip HendM and Clean ZIP
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'HendM_starter.zip'
+
 jobs:
   unzip:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: sudo apt-get update -y && sudo apt-get install -y unzip rsync
-      - run: |
-          test -f HendM_starter.zip || (echo "Archive not found" && exit 1)
-          rm -rf extracted_zip
-          unzip -o HendM_starter.zip -d extracted_zip
-      - run: |
-          rsync -a extracted_zip/ ./
-          rm -rf extracted_zip HendM_starter.zip
-      - uses: stefanzweifel/git-auto-commit-action@v5
-        with: { commit_message: "Unzip HendM starter and arrange folders" }
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install unzip
+        run: sudo apt-get update && sudo apt-get install unzip -y
+
+      - name: Unzip HendM_starter.zip
+        run: unzip -o HendM_starter.zip -d .
+
+      - name: Remove ZIP and Commit Files
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git rm -f HendM_starter.zip || true
+          git add .
+          git commit -m "Unzipped HendM project and removed ZIP" || echo "No changes to commit"
+          git push
