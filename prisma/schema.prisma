@@ -1,11 +1,15 @@
+<<<<<<< HEAD
 // prisma/schema.prisma
 
+=======
+>>>>>>> 5f960dd (Unzip project and push source code)
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+<<<<<<< HEAD
   url      = env("DATABASE_URL") // ضع متغير الاتصال من Vercel Postgres
 }
 
@@ -13,6 +17,14 @@ datasource db {
 model Product {
   id            Int            @id @default(autoincrement())
   slug          String         @unique              // معرّف نصي URL-friendly
+=======
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id            Int            @id @default(autoincrement())
+  slug          String         @unique
+>>>>>>> 5f960dd (Unzip project and push source code)
   title         String
   titleAr       String
   description   String
@@ -20,6 +32,7 @@ model Product {
   price         Int
   currency      String         @default("USD")
   category      String
+<<<<<<< HEAD
   sizes         String[]                               // مثل ["S","M","L"]
   colors        String[]                               // مثل ["black","white"]
   images        ProductImage[]                         // علاقة إلى صور المنتج
@@ -34,10 +47,26 @@ model ProductImage {
   id        Int      @id @default(autoincrement())
   url       String                                   // رابط الصورة
   alt       String?                                  // نص بديل (اختياري)
+=======
+  sizes         String[]
+  colors        String[]
+  images        ProductImage[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model ProductImage {
+  id        Int      @id @default(autoincrement())
+  url       String
+  alt       String?
+>>>>>>> 5f960dd (Unzip project and push source code)
   productId Int
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+<<<<<<< HEAD
 
   @@index([productId])
+=======
+>>>>>>> 5f960dd (Unzip project and push source code)
 }
